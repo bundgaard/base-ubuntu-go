@@ -7,18 +7,22 @@ RUN apt update -qq -y && \
     apt install -qq -y --no-install-recommends \
     ca-certificates \
     curl \
-    git
+    git && \
+    rm -rf /var/cache/apt/*
 
-ARG GOLANG_VERSION=1.15.2
-ARG GOLANG_OS=linux
-ARG GOLANG_ARCH=amd64
+ARG GOVERSION=1.15.2
+ARG GOOS=linux
+ARG GOARCH=amd64
 
 COPY download.sh /usr/local/bin
 
-RUN download.sh ${GOLANG_VERSION} ${GOLANG_OS} ${GOLANG_ARCH}
+RUN download.sh ${GOVERSION} ${GOOS} ${GOARCH}
 
+# Below the end result of multi-stage
+
+FROM ubuntu:20.04
 ENV PATH=/usr/local/go/bin:/usr/sbin:/usr/bin:/sbin:/bin:/go/bin
-
+COPY --from=builder /go /go
 CMD ["/go/bin/go"]
 
 
