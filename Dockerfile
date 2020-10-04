@@ -18,11 +18,9 @@ COPY download.sh /usr/local/bin
 
 RUN download.sh ${GOVERSION} ${GOOS} ${GOARCH}
 
-# Below the end result of multi-stage
-
-FROM ubuntu:20.04
 ENV PATH=/usr/local/go/bin:/usr/sbin:/usr/bin:/sbin:/bin:/go/bin
-COPY --from=builder /go /go
+ENV GOROOT=/go
+
 CMD ["/go/bin/go"]
 
 
